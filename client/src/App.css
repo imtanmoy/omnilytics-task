@@ -1,0 +1,7 @@
+.ant-collapse-item{
+  border: none!important;
+}
+
+.ant-collapse-header, .ant-collapse-content-box{
+  padding: 0!important;
+}
