@@ -20,7 +20,7 @@ lint: ## all lint commands
 	@echo "Running black"
 	python -m black ./app --check
 	@echo "Running isort"
-	python -m isort .app/*/*.py --check-only
+	python -m isort **/*.py --check-only
 
 
 fix: ## fixing all black and isort error
@@ -29,4 +29,4 @@ fix: ## fixing all black and isort error
 	@echo "Running black"
 	python -m black ./app
 	@echo "Running isort"
-	python -m isort .app/*/*.py
+	python -m isort **/*.py

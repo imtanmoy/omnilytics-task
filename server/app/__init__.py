@@ -1,13 +1,10 @@
 from random import randint
 
-from flask import Flask, make_response, jsonify, request
+from flask import Flask, jsonify, make_response, request
 from flask.helpers import send_from_directory
 from flask_cors import CORS
 
-from app.utils import get_random_object, get_object_type, generate_txt_file
-
-# character_length = 1024*2
-
+from app.utils import generate_txt_file, get_object_type, get_random_object
 
 character_length = 1048576 * 2
 
@@ -21,7 +18,7 @@ def create_app():
 
 
 def register_endpoints(app):
-    @app.route('/', methods=['GET'])
+    @app.route("/", methods=["GET"])
     def root():
         contents = ""
         contents_size = 0
@@ -31,7 +28,7 @@ def register_endpoints(app):
             "alphanumerics": 0,
             "real_number": 0,
             "file_link": "",
-            "file_name": ""
+            "file_name": "",
         }
         while True:
             if contents_size == character_length:
@@ -59,41 +56,33 @@ def register_endpoints(app):
             contents_size = len(contents)
         file_name = generate_txt_file(contents)
         response["file_name"] = file_name
-        response["file_link"] = request.host_url + 'static/' + file_name
+        response["file_link"] = request.host_url + "static/" + file_name
         return jsonify(response)
 
-    @app.route('/static/<path:path>')
+    @app.route("/static/<path:path>")
     def download(path):
         print(path)
-        return send_from_directory('static', path)
+        return send_from_directory("static", path)
 
-    @app.route('/status', methods=['GET'])
-    @app.route('/health', methods=['GET'])
+    @app.route("/status", methods=["GET"])
+    @app.route("/health", methods=["GET"])
     def status():
-        response = {
-            'status': 'OK'
-        }
+        response = {"status": "OK"}
         return make_response(jsonify(response))
 
     @app.errorhandler(404)
     def page_not_found(error):
-        app.logger.error('Page not found: %s', request.path)
-        return make_response(jsonify({
-            'message': f'{str(error)}'
-        })), 404
+        app.logger.error("Page not found: %s", request.path)
+        return make_response(jsonify({"message": f"{str(error)}"})), 404
 
     @app.errorhandler(500)
     def internal_server_error(error):
-        app.logger.error('Server Error: %s', error)
-        return make_response(jsonify({
-            'message': f'{str(error)}'
-        })), 500
+        app.logger.error("Server Error: %s", error)
+        return make_response(jsonify({"message": f"{str(error)}"})), 500
 
     @app.errorhandler(Exception)
     def unhandled_exception(e):
-        return make_response(jsonify({
-            'message': f'{str(e)}'
-        })), 500
+        return make_response(jsonify({"message": f"{str(e)}"})), 500
 
 
 def configure_app(app):
